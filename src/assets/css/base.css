@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+::selection {
+  @apply bg-primary;
+  color: #fff;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-size: 1.6rem;
+  font-family: "Poppins", sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: unset;
+  transition: all 0.3s ease;
+}
+img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+input,
+button {
+  border: none;
+  outline: none;
+}
+
+input::placeholder {
+  color: #000;
+}
+@layer utilities {
+  .p-b-safe-4 {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+}

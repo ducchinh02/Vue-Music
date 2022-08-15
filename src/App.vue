@@ -1,30 +1,41 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view />
+  <transition name="scale">
+    <component :is="layout">
+      <router-view />
+    </component>
+  </transition>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<script>
+import { useRoute } from "vue-router";
+import { computed } from "vue";
+import { PUBLIC_LAYOUT } from "./constants";
+export default {
+  setup() {
+    const route = useRoute();
+    return {
+      layout: computed(() => (route.meta.layout || PUBLIC_LAYOUT) + "-layout"),
+    };
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.scale-enter-active {
+  animation: scale 0.5s ease;
 }
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+.scale-leave-active {
+  animation: scale 0.3s reverse;
+}
+@keyframes scale {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+    transform-origin: bottom left;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 </style>
