@@ -162,18 +162,25 @@ export default {
       type: String,
       required: false,
     },
+    type: {
+      type: String,
+      required: false,
+    },
   },
   components: {
     HeaderActions,
   },
   setup() {
+    // console.log(type);
     // define variables
     const route = useRoute();
     const audio = ref(null);
     audio.value = new Audio();
     const currentSongIndex = ref(null);
     const song = ref(null);
-    const listMusic = reactive(LIST_MUSIC);
+    const listMusic = reactive(
+      LIST_MUSIC.filter((song) => song.genre === route.query.type)
+    );
     const isMoving = ref(false);
     const cdAnimate = ref(null);
     const isLoop = ref(false);
@@ -186,6 +193,7 @@ export default {
       isPlaying.value = true;
       audio.value.autoplay = "true";
     });
+    // dom
     onMounted(() => {
       const currentTime = document.querySelector(
         ".song-progress .current-time"
@@ -196,17 +204,6 @@ export default {
     });
     // check status
     const isPlaying = ref(false);
-    // play song
-    const playSong = () => {
-      if (isPlaying.value) {
-        isPlaying.value = false;
-        audio.value.pause();
-        cdAnimate.value.pause();
-      } else {
-        isPlaying.value = true;
-        audio.value.play();
-      }
-    };
     // get current song index
     const getSongIndex = (song) => {
       const index = listMusic.indexOf(song.value);
@@ -222,6 +219,17 @@ export default {
         audio.value.play();
       } else {
         audio.value.pause();
+      }
+    };
+    // play song
+    const playSong = () => {
+      if (isPlaying.value) {
+        isPlaying.value = false;
+        audio.value.pause();
+        cdAnimate.value.pause();
+      } else {
+        isPlaying.value = true;
+        audio.value.play();
       }
     };
     // next song
@@ -248,6 +256,27 @@ export default {
         setNewSong();
       }
     };
+    // loop song
+    const loopSong = () => {
+      isLoop.value = !isLoop.value;
+      audio.value.loop = isLoop.value;
+    };
+    // shuffle song
+    const shuffleSong = () => {
+      if (isShuffle.value) {
+        let newIndex;
+        do {
+          newIndex = Math.floor(Math.random() * listMusic.length);
+        } while (newIndex === currentSongIndex.value);
+        currentSongIndex.value = newIndex;
+        setNewSong();
+      }
+    };
+    // toggle status shuffle
+    const activeShuffle = () => {
+      isShuffle.value = !isShuffle.value;
+      shuffleSong();
+    };
     // remove audio src when leave page
     onUnmounted(() => {
       audio.value.src = "";
@@ -256,21 +285,6 @@ export default {
     // audio.value.onplay = () => {
     //   cdAnimate.value.play();
     // };
-    // data song loaded
-    audio.value.onloadeddata = () => {
-      //   const cdThumb = document.querySelector(".cd-thumb");
-      //   cdAnimate.value = cdThumb.animate([{ transform: "rotate(360deg)" }], {
-      //     duration: 10000,
-      //     iterations: Infinity,
-      //   });
-      //   cdAnimate.value.pause();
-      let totalSec = Math.floor(audio.value.duration % 60);
-      let totalMin = Math.floor(audio.value.duration / 60);
-      totalMin < 10 ? (totalMin = `0${totalMin}`) : totalMin;
-      totalSec < 10 ? (totalSec = `0${totalSec}`) : totalSec;
-      const duration = document.querySelector(".song-progress .duration");
-      duration.innerHTML = totalMin + ":" + totalSec;
-    };
     // update time
     const updateTime = () => {
       // current time
@@ -292,20 +306,6 @@ export default {
       slide.style.width = Math.round(percent) + "%";
       range.value = Math.round(percent);
     };
-    // on time update
-    audio.value.ontimeupdate = () => {
-      if (!isMoving.value) {
-        updateProgress();
-        updateTime();
-      }
-    };
-    // on time ended
-    audio.value.onended = () => {
-      if (isShuffle.value) {
-        shuffleSong();
-      }
-      nextSong();
-    };
     // seek time
     const seekTime = (e) => {
       isMoving.value = true;
@@ -321,26 +321,34 @@ export default {
       let x = e.target.value;
       slide.style.width = x + "%";
     };
-    // loop song
-    const loopSong = () => {
-      isLoop.value = !isLoop.value;
-      audio.value.loop = isLoop.value;
+    // data song loaded
+    audio.value.onloadeddata = () => {
+      //   const cdThumb = document.querySelector(".cd-thumb");
+      //   cdAnimate.value = cdThumb.animate([{ transform: "rotate(360deg)" }], {
+      //     duration: 10000,
+      //     iterations: Infinity,
+      //   });
+      //   cdAnimate.value.pause();
+      let totalSec = Math.floor(audio.value.duration % 60);
+      let totalMin = Math.floor(audio.value.duration / 60);
+      totalMin < 10 ? (totalMin = `0${totalMin}`) : totalMin;
+      totalSec < 10 ? (totalSec = `0${totalSec}`) : totalSec;
+      const duration = document.querySelector(".song-progress .duration");
+      duration.innerHTML = totalMin + ":" + totalSec;
     };
-    // shuffle song
-    const shuffleSong = () => {
-      if (isShuffle.value) {
-        let newIndex;
-        do {
-          newIndex = Math.floor(Math.random() * listMusic.length);
-        } while (newIndex === currentSongIndex.value);
-        currentSongIndex.value = newIndex;
-        setNewSong();
+    // on time update
+    audio.value.ontimeupdate = () => {
+      if (!isMoving.value) {
+        updateProgress();
+        updateTime();
       }
     };
-    // toggle status shuffle
-    const activeShuffle = () => {
-      isShuffle.value = !isShuffle.value;
-      shuffleSong();
+    // on time ended
+    audio.value.onended = () => {
+      if (isShuffle.value) {
+        shuffleSong();
+      }
+      nextSong();
     };
     // const downloadSong = () => {
     //   const downloadSong = song.value.src;

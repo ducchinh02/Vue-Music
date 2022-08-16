@@ -35,6 +35,7 @@ const routes = [
   {
     path: "/playsong/:name",
     name: "PlaySong",
+    props: true,
     component: () =>
       import(/*webpackChunkName : "playsong" */ "../views/MusicPlayer.vue"),
   },

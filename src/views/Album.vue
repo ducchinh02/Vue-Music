@@ -17,7 +17,11 @@
     >
       <div class="flex flex-col gap-7">
         <router-link
-          :to="{ name: 'PlaySong', params: { name: song.id } }"
+          :to="{
+            name: 'PlaySong',
+            params: { name: song.id },
+            query: { type: song.genre },
+          }"
           v-for="song in listMusic"
           :key="song.id"
         >
