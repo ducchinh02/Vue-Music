@@ -52,8 +52,11 @@
           <li
             v-for="album in menuAlbum"
             :key="album.genre"
-            class="transition-colors duration-200 hover:text-primary text-lg"
+            class="transition-colors duration-200 flex items-center gap-2 hover:text-primary text-lg"
           >
+            <div class="icon text-2xl flex items-center">
+              <ion-icon name="albums-outline"></ion-icon>
+            </div>
             <router-link :to="{ name: 'Album', params: { name: album.genre } }">
               {{ album.title }}
             </router-link>
@@ -77,18 +80,21 @@
         </div>
         <!-- sub menu -->
         <ul
-          class="sub-menu pl-4 flex flex-col gap-3 transition-all duration-300"
+          class="sub-menu songs-wishlist pl-4 flex flex-col gap-3 transition-all duration-300"
           :class="{
-            'max-h-52 h-max mt-3': isShowSongs,
-            'h-0 overflow-hidden': !isShowSongs,
+            'max-h-60 overflow-auto mt-3': isShowSongs,
+            'max-h-0 overflow-hidden': !isShowSongs,
           }"
           v-if="menuSongs"
         >
           <li
             v-for="song in menuSongs"
             :key="song.id"
-            class="transition-colors duration-200 hover:text-primary text-lg"
+            class="transition-colors flex items-center gap-2 duration-200 hover:text-primary text-lg"
           >
+            <div class="icon flex items-center text-2xl">
+              <ion-icon name="musical-notes-outline"></ion-icon>
+            </div>
             <router-link
               :to="{
                 name: 'PlaySong',
@@ -148,6 +154,20 @@ nav {
   .close-icon:hover {
     transform: rotate(360deg);
     @apply text-primary;
+  }
+}
+.songs-wishlist {
+  &::-webkit-scrollbar {
+    width: 8px;
+    border-radius: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    @apply bg-gray3;
+    border-radius: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    @apply bg-gray2;
+    border-radius: 8px;
   }
 }
 </style>

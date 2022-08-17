@@ -49,7 +49,11 @@
       <div v-else class="flex flex-col gap-7 mt-8">
         <router-link
           v-for="song in searchResult"
-          :to="{ name: 'PlaySong', params: { name: song.id } }"
+          :to="{
+            name: 'PlaySong',
+            params: { name: song.id },
+            query: { type: song.genre },
+          }"
           :key="song.id"
         >
           <music-item
