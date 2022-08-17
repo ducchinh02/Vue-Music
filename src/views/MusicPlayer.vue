@@ -31,7 +31,7 @@
     </header-actions>
     <!-- main -->
     <div
-      class="music-container overflow-auto pb-6 flex-1 mt-8 rounded-t-3xl bg-white"
+      class="music-container overflow-auto pb-40 flex-1 mt-8 rounded-t-3xl bg-white"
     >
       <div
         class="container px-8 mx-auto pt-12 md:flex md:items-center md:justify-around"
