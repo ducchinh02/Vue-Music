@@ -7,7 +7,12 @@
     }"
   >
     <!-- header actions -->
-    <header-actions routerName="Album" :routerParams="{ name: song.genre }">
+    <header-actions
+      @addToWishList="addToWishList"
+      routerName="Album"
+      :routerParams="{ name: song.genre }"
+      :isInWishList="isInWishList"
+    >
       <div class="flex-1 text-center text-sm md:text-base px-4">
         Now Playing
 
@@ -156,6 +161,7 @@ import HeaderActions from "../components/HeaderActions.vue";
 import { useRoute } from "vue-router";
 import { onBeforeMount, ref, onUnmounted, onMounted, reactive } from "vue";
 import { LIST_MUSIC } from "@/constants/index";
+import { useStore } from "vuex";
 export default {
   props: {
     bgSong: {
@@ -185,6 +191,9 @@ export default {
     const cdAnimate = ref(null);
     const isLoop = ref(false);
     const isShuffle = ref(false);
+    const store = useStore();
+    const isInWishList = ref(false);
+    console.log(store);
     // get song on load
     onBeforeMount(() => {
       audio.value.play();
@@ -192,7 +201,31 @@ export default {
       audio.value.src = song.value.src;
       isPlaying.value = true;
       audio.value.autoplay = "true";
+      // set currentSongIndex
+      const index = listMusic.indexOf(song.value);
+      if (index !== -1) {
+        currentSongIndex.value = index;
+      }
+      // check if song is in wishlist
+      const check = store.state.songs.find((s) => s.id === song.value.id);
+      if (check) {
+        isInWishList.value = true;
+      } else isInWishList.value = false;
     });
+    // add to wishlist
+    const addToWishList = () => {
+      if (isInWishList.value) {
+        store.dispatch("removeSongFromWishlist", {
+          song: listMusic[currentSongIndex.value],
+        });
+        isInWishList.value = false;
+      } else {
+        store.dispatch("addSongToWishlist", {
+          song: listMusic[currentSongIndex.value],
+        });
+        isInWishList.value = true;
+      }
+    };
     // dom
     onMounted(() => {
       const currentTime = document.querySelector(
@@ -232,6 +265,13 @@ export default {
         audio.value.play();
       }
     };
+    // check in wishlist
+    const checkInWishList = () => {
+      const check = store.state.songs.find((s) => s.id === song.value.id);
+      if (check) {
+        isInWishList.value = true;
+      } else isInWishList.value = false;
+    };
     // next song
     const nextSong = () => {
       if (isShuffle.value) {
@@ -242,6 +282,7 @@ export default {
         if (currentSongIndex.value > listMusic.length - 1)
           currentSongIndex.value = 0;
         setNewSong();
+        checkInWishList();
       }
     };
     // previous song
@@ -254,6 +295,7 @@ export default {
         if (currentSongIndex.value < 0)
           currentSongIndex.value = listMusic.length - 1;
         setNewSong();
+        checkInWishList();
       }
     };
     // loop song
@@ -270,6 +312,7 @@ export default {
         } while (newIndex === currentSongIndex.value);
         currentSongIndex.value = newIndex;
         setNewSong();
+        checkInWishList();
       }
     };
     // toggle status shuffle
@@ -350,15 +393,6 @@ export default {
       }
       nextSong();
     };
-    // const downloadSong = () => {
-    //   const downloadSong = song.value.src;
-    //   const fileName = song.value.name + ".mp3";
-    //   download(downloadSong, fileName);
-    // };
-
-    // const download = (song,fileName) =>{
-
-    // }
 
     return {
       route,
@@ -375,7 +409,8 @@ export default {
       isLoop,
       isShuffle,
       activeShuffle,
-      // downloadSong,
+      isInWishList,
+      addToWishList,
     };
   },
 };

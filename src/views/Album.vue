@@ -9,7 +9,11 @@
       :heading="album.title"
       :subtitle="album.desc"
     >
-      <header-actions routerName="Dashboard" @addToWishList="addToWishList" />
+      <header-actions
+        :isInWishList="isInWishList"
+        routerName="Dashboard"
+        @addToWishList="addToWishList"
+      />
     </header-main>
     <!-- list songs -->
     <div
@@ -39,15 +43,11 @@
 <script>
 import HeaderMain from "../components/HeaderMain.vue";
 import { useRoute } from "vue-router";
-import { computed } from "vue";
-import {
-  MUSIC_GENRE,
-  WISH_LIST,
-  LIST_MUSIC,
-  shuffled,
-} from "@/constants/index";
+import { computed, onBeforeMount, ref } from "vue";
+import { MUSIC_GENRE, LIST_MUSIC, shuffled } from "@/constants/index";
 import HeaderActions from "../components/HeaderActions.vue";
 import MusicItem from "../components/MusicItem.vue";
+import { useStore } from "vuex";
 export default {
   components: { HeaderMain, HeaderActions, MusicItem },
   setup() {
@@ -56,18 +56,27 @@ export default {
     const album = computed(() =>
       MUSIC_GENRE.find((album) => album.genre === route.params.name)
     );
-
+    // use store
+    const store = useStore();
+    const isInWishList = ref(false);
+    // check wishlist
+    onBeforeMount(() => {
+      const check = store.state.album.find(
+        (albumW) => albumW.genre === album.value.genre
+      );
+      if (check) {
+        isInWishList.value = true;
+      } else isInWishList.value = false;
+    });
     // add to wishlist
-    const addToWishList = (data) => {
-      if (data.status) {
-        WISH_LIST.album.push(album);
+    const addToWishList = () => {
+      if (isInWishList.value) {
+        store.dispatch("removeFromWishlist", { album: album.value });
+        isInWishList.value = false;
       } else {
-        const index = WISH_LIST.album.indexOf(album);
-        if (index !== -1) {
-          WISH_LIST.album.splice(index, 1);
-        }
+        store.dispatch("addToWishlist", { album: album.value });
+        isInWishList.value = true;
       }
-      console.log(WISH_LIST.album);
     };
     // get list music
     const listMusic = computed(() =>
@@ -75,17 +84,7 @@ export default {
         shuffled(LIST_MUSIC.filter((song) => song.genre === route.params.name))
       )
     );
-    // play song event (temp)
-    // const playSong = (song) => {
-    //   audio.value.src = song.src;
-    //   audio.value.play();
-    //   audio.value.loop = true;
-    // };
-    // remove audio src when leave page
-    // onUnmounted(() => {
-    //   audio.value.src = "";
-    // });
-    return { album, addToWishList, listMusic };
+    return { album, addToWishList, listMusic, isInWishList };
   },
 };
 </script>

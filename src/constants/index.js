@@ -123,8 +123,3 @@ export const LIST_MUSIC = [
     id: "chill10",
   },
 ];
-
-export const WISH_LIST = {
-  album: [],
-  songs: [],
-};

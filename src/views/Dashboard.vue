@@ -59,6 +59,9 @@
           />
         </router-link>
       </div>
+      <!-- <div class="break-words">
+        {{ listAlbum }}
+      </div> -->
     </div>
   </div>
 </template>
@@ -68,6 +71,7 @@ import { MUSIC_GENRE, LIST_MUSIC } from "@/constants/index";
 import { ref, reactive, computed } from "vue";
 import Slider from "@/components/Slider.vue";
 import MusicItem from "@/components/MusicItem.vue";
+// import { useStore } from "vuex";
 export default {
   components: { Slider, MusicItem },
 
@@ -90,6 +94,8 @@ export default {
             .includes(searchValue.value.toLocaleLowerCase().trim())
       )
     );
+    // const store = useStore();
+    // const listAlbum = computed(() => store.state.songs);
     // on input search event
     const onSearch = () => {
       isSearching.value = true;

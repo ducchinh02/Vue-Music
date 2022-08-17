@@ -25,25 +25,81 @@
     <!-- menu -->
     <div class="text-primary pt-10 pb-5 font-bold text-2xl">Wishlist</div>
     <ul class="menu flex flex-col gap-3">
-      <li>
+      <li @click="showAlbumMenu">
         <div
           class="flex items-center justify-between transition-all duration-300 cursor-pointer hover:text-primary"
         >
           <span class="font-medium">Albums</span>
-          <div class="icon flex items-center text-2xl">
+          <div
+            class="icon flex items-center text-2xl transition-all duration-300"
+            :class="{
+              'rotate-90': isShowAlbum,
+              'rotate-0': !isShowAlbum,
+            }"
+          >
             <ion-icon name="chevron-forward-outline"></ion-icon>
           </div>
         </div>
+        <!-- sub menu -->
+        <ul
+          class="sub-menu pl-4 flex flex-col gap-3 transition-all duration-300"
+          :class="{
+            'max-h-24 h-max mt-3': isShowAlbum,
+            'max-h-0 overflow-hidden': !isShowAlbum,
+          }"
+          v-if="menuAlbum"
+        >
+          <li
+            v-for="album in menuAlbum"
+            :key="album.genre"
+            class="transition-colors duration-200 hover:text-primary text-lg"
+          >
+            <router-link :to="{ name: 'Album', params: { name: album.genre } }">
+              {{ album.title }}
+            </router-link>
+          </li>
+        </ul>
       </li>
-      <li>
+      <li @click="showSongsMenu">
         <div
           class="flex items-center justify-between transition-all duration-300 cursor-pointer hover:text-primary"
         >
           <span class="font-medium">Songs</span>
-          <div class="icon flex items-center text-2xl">
+          <div
+            class="icon flex items-center text-2xl transition-all duration-300"
+            :class="{
+              'rotate-90': isShowSongs,
+              'rotate-0': !isShowSongs,
+            }"
+          >
             <ion-icon name="chevron-forward-outline"></ion-icon>
           </div>
         </div>
+        <!-- sub menu -->
+        <ul
+          class="sub-menu pl-4 flex flex-col gap-3 transition-all duration-300"
+          :class="{
+            'max-h-52 h-max mt-3': isShowSongs,
+            'h-0 overflow-hidden': !isShowSongs,
+          }"
+          v-if="menuSongs"
+        >
+          <li
+            v-for="song in menuSongs"
+            :key="song.id"
+            class="transition-colors duration-200 hover:text-primary text-lg"
+          >
+            <router-link
+              :to="{
+                name: 'PlaySong',
+                params: { name: song.id },
+                query: { type: song.genre },
+              }"
+            >
+              {{ song.name }}
+            </router-link>
+          </li>
+        </ul>
       </li>
     </ul>
   </nav>
@@ -51,7 +107,37 @@
 
 <script>
 import ImageLogo from "@/components/ImageLogo.vue";
-export default { components: { ImageLogo } };
+import { useStore } from "vuex";
+import { computed, ref } from "vue";
+export default {
+  components: { ImageLogo },
+  setup() {
+    const store = useStore();
+    const menuAlbum = computed(() => store.state.album);
+    const menuSongs = computed(() => store.state.songs);
+    const isShowAlbum = ref(false);
+    const isShowSongs = ref(false);
+
+    const showAlbumMenu = () => {
+      isShowSongs.value = false;
+      isShowAlbum.value = !isShowAlbum.value;
+    };
+
+    const showSongsMenu = () => {
+      isShowAlbum.value = false;
+      isShowSongs.value = !isShowSongs.value;
+    };
+
+    return {
+      menuAlbum,
+      isShowAlbum,
+      isShowSongs,
+      showAlbumMenu,
+      showSongsMenu,
+      menuSongs,
+    };
+  },
+};
 </script>
 
 <style lang="scss" scoped>

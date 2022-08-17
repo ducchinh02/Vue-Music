@@ -1,6 +1,6 @@
 <template>
   <transition name="appear">
-    <main>
+    <main class="relative">
       <header class="container mx-auto px-9 pt-9">
         <div class="header flex items-center justify-between">
           <div class="logo flex items-center gap-4">

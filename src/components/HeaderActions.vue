@@ -13,11 +13,11 @@
       <div
         class="icon flex items-center transition-all duration-300 cursor-pointer"
         @click="addToWishList"
-        :class="{ 'action-active': action_active }"
+        :class="{ 'action-active': isInWishList }"
       >
         <ion-icon
           name="heart"
-          :class="{ 'text-white': action_active }"
+          :class="{ 'text-white': isInWishList }"
           class="visible"
         ></ion-icon>
       </div>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+// import { ref } from "vue";
 export default {
   props: {
     routerName: {
@@ -43,21 +43,24 @@ export default {
         return "{}";
       },
     },
+    isInWishList: {
+      type: Boolean,
+      required: false,
+    },
   },
   setup(props, { emit }) {
-    const action_active = ref(false);
     const addToWishList = () => {
-      action_active.value = !action_active.value;
-      emit("addToWishList", { status: action_active.value });
+      emit("addToWishList");
     };
 
-    return { action_active, addToWishList };
+    return { addToWishList };
   },
 };
 </script>
 
 <style lang="scss" scoped>
 .action-active {
+  @apply text-white;
   animation: bounce 0.5s linear;
 }
 @keyframes bounce {
