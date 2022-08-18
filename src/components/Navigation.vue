@@ -57,7 +57,9 @@
             <div class="icon text-2xl flex items-center">
               <ion-icon name="albums-outline"></ion-icon>
             </div>
-            <router-link :to="{ name: 'Album', params: { name: album.genre } }">
+            <router-link 
+              class="flex-1" 
+              :to="{ name: 'Album', params: { name: album.genre } }">
               {{ album.title }}
             </router-link>
           </li>
@@ -101,6 +103,7 @@
                 params: { name: song.id },
                 query: { type: song.genre },
               }"
+              class="flex-1"
             >
               {{ song.name }}
             </router-link>
