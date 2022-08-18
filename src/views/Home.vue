@@ -11,7 +11,7 @@
     </div>
     <div class="bg-image flex-1 flex pt-10">
       <div
-        class="container mx-auto px-9 pb-10 flex flex-col justify-between md:flex-row md:items-center"
+        class="container mx-auto px-9 pb-9 flex flex-col justify-between md:flex-row md:items-center"
       >
         <div class="main-image">
           <img src="@/assets/images/TheBandSpeaker2.svg" alt="Main Image" />
@@ -27,6 +27,9 @@
               name="chevron-forward-outline"
             ></ion-icon>
           </router-link>
+          <div class="text-sm font-semibold pt-6 text-text">
+            Built By Duc Chinh - XXDCII
+          </div>
         </div>
       </div>
     </div>
