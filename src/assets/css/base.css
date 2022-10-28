@@ -46,4 +46,7 @@ input::placeholder {
   .p-b-safe-4 {
     padding-bottom: calc(1rem + env(safe-area-inset-bottom));
   }
+  .p-b-safe-7 {
+    padding-bottom: calc(1.75rem + env(safe-area-inset-bottom));
+  }
 }

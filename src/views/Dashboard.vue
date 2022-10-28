@@ -6,10 +6,11 @@
         <input
           type="text"
           id="search-music"
-          class="py-3 pl-11 pr-11 bg-gray w-full text-base rounded-xl transition-all duration-300"
+          class="py-3 pr-11 bg-gray w-full text-base rounded-xl transition-all duration-300"
           placeholder="Search music"
           :class="{
             'pl-4': isSearching,
+            'pl-11': !isSearching,
           }"
           v-model="searchValue"
           @input="onSearch"
@@ -78,7 +79,6 @@ import MusicItem from "@/components/MusicItem.vue";
 // import { useStore } from "vuex";
 export default {
   components: { Slider, MusicItem },
-
   setup() {
     // define variables
     const searchValue = ref("");
@@ -112,7 +112,6 @@ export default {
       isSearching.value = false;
       searchValue.value = "";
     };
-
     return {
       searchMusic,
       searchValue,

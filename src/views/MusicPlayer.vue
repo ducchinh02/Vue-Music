@@ -31,7 +31,7 @@
     </header-actions>
     <!-- main -->
     <div
-      class="music-container overflow-auto pb-40 flex-1 mt-8 rounded-t-3xl bg-white"
+      class="music-container overflow-auto pb-20 flex-1 mt-8 rounded-t-3xl bg-white"
     >
       <div
         class="container px-8 mx-auto pt-12 md:flex md:items-center md:justify-around"
@@ -121,13 +121,15 @@
     </div>
     <!-- footer -->
     <div
-      class="footer-actions rounded-t-3xl overflow-hidden fixed bottom-0 left-0 w-full p-b-safe-4"
-      :class="{
-        'bg-primary': song.genre === 'chill',
-        'bg-yellow': song.genre === 'classic',
-      }"
+      class="footer-actions overflow-hidden bg-white sticky bottom-0 left-0 w-full"
     >
-      <div class="container mx-auto px-8 pt-8 pb-3">
+      <div
+        class="container mx-auto px-8 max-w-full rounded-t-3xl pt-8 p-b-safe-7"
+        :class="{
+          'bg-primary': song.genre === 'chill',
+          'bg-yellow': song.genre === 'classic',
+        }"
+      >
         <div class="flex items-center justify-around text-3xl text-text">
           <a
             class="icon flex items-center cursor-pointer"
@@ -193,7 +195,6 @@ export default {
     const isShuffle = ref(false);
     const store = useStore();
     const isInWishList = ref(false);
-    console.log(store);
     // get song on load
     onBeforeMount(() => {
       audio.value.play();
