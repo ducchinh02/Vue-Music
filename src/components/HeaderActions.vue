@@ -37,10 +37,10 @@ export default {
       },
     },
     routerParams: {
-      type: String,
+      type: Object,
       required: false,
       default() {
-        return "{}";
+        return {};
       },
     },
     isInWishList: {

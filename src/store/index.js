@@ -1,4 +1,5 @@
 import { createStore } from "vuex";
+import vuexPersistedState from "vuex-plugin-persistedstate";
 
 // Create a new store instance.
 const store = createStore({
@@ -6,6 +7,7 @@ const store = createStore({
     return {
       album: [],
       songs: [],
+      nowPlaying: null,
     };
   },
   mutations: {
@@ -31,6 +33,9 @@ const store = createStore({
         state.songs.splice(index, 1);
       }
     },
+    setCurrentSongPlaying(state, song) {
+      state.nowPlaying = song;
+    },
   },
   actions: {
     addToWishlist({ commit }, { album }) {
@@ -46,6 +51,7 @@ const store = createStore({
       commit("removeFromSongWishlist", song);
     },
   },
+  plugins: [vuexPersistedState()],
 });
 
 export default store;

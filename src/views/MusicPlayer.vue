@@ -34,10 +34,10 @@
       class="music-container overflow-auto pb-20 flex-1 mt-8 rounded-t-3xl bg-white"
     >
       <div
-        class="container px-8 mx-auto pt-12 md:flex md:items-center md:justify-around"
+        class="container px-8 mx-auto pt-12 lg:flex lg:items-center lg:justify-around"
       >
         <!-- cd thumb -->
-        <div class="px-16 md:px-0 mx-auto md:mx-0 md:w-96">
+        <div class="mx-auto lg:mx-0 w-56 sm:w-72 lg:w-96">
           <div
             class="cd-thumb w-full rounded-full relative"
             style="padding-top: 100%"
@@ -55,7 +55,7 @@
           </div>
         </div>
         <!-- song actions -->
-        <div class="music-actions md:w-2/5">
+        <div class="music-actions lg:w-2/5">
           <div class="song-info text-center mt-6">
             <div class="song-name font-semibold text-2xl">{{ song.name }}</div>
             <div class="song-artist text-base text-text">
@@ -93,28 +93,32 @@
               <ion-icon name="play-skip-forward"></ion-icon>
             </div>
           </div>
-          <!-- song duration -->
-          <div class="song-progress mt-10 flex items-center gap-3">
-            <!-- current time -->
-            <div class="current-time text-text text-xs font-medium"></div>
-            <!-- progress -->
-            <div class="w-full flex-1 relative progress-bar">
-              <input
-                type="range"
-                value="0"
-                step="1"
-                min="0"
-                max="100"
-                class="w-full h-2 block rounded cursor-pointer"
-                @input="moveProgressBar"
-                @change="seekTime"
-              />
-              <div
-                class="slide absolute pointer-events-none top-0 rounded left-0 h-full bg-black"
-              ></div>
+          <div class="song-controls flex flex-wrap mt-10 items-center gap-5">
+            <!-- song duration -->
+            <div class="song-progress w-full sm:w-3/5 flex items-center gap-3">
+              <!-- current time -->
+              <div class="current-time text-text text-xs font-medium"></div>
+              <!-- progress -->
+              <div class="w-full flex-1 relative progress-bar">
+                <input
+                  type="range"
+                  value="0"
+                  step="1"
+                  min="0"
+                  max="100"
+                  class="w-full h-2 block rounded cursor-pointer"
+                  @input="moveProgressBar"
+                  @change="seekTime"
+                />
+                <div
+                  class="slide absolute pointer-events-none top-0 rounded left-0 h-full bg-black"
+                ></div>
+              </div>
+              <!-- duration -->
+              <div class="duration text-text text-xs font-medium"></div>
             </div>
-            <!-- duration -->
-            <div class="duration text-text text-xs font-medium"></div>
+            <!-- song volume -->
+            <music-volume @setSongVolume="setSongVolume" class="flex-1" />
           </div>
         </div>
       </div>
@@ -160,8 +164,16 @@
 
 <script>
 import HeaderActions from "../components/HeaderActions.vue";
+import MusicVolume from "@/components/MusicVolume.vue";
 import { useRoute } from "vue-router";
-import { onBeforeMount, ref, onUnmounted, onMounted, reactive } from "vue";
+import {
+  onBeforeMount,
+  ref,
+  onUnmounted,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+} from "vue";
 import { LIST_MUSIC } from "@/constants/index";
 import { useStore } from "vuex";
 export default {
@@ -177,6 +189,7 @@ export default {
   },
   components: {
     HeaderActions,
+    MusicVolume,
   },
   setup() {
     // console.log(type);
@@ -185,12 +198,13 @@ export default {
     const audio = ref(null);
     audio.value = new Audio();
     const currentSongIndex = ref(null);
+    // const currentSongPlaying = computed(() => store.state.nowPlaying);
     const song = ref(null);
     const listMusic = reactive(
       LIST_MUSIC.filter((song) => song.genre === route.query.type)
     );
     const isMoving = ref(false);
-    const cdAnimate = ref(null);
+    // const cdAnimate = ref(null);
     const isLoop = ref(false);
     const isShuffle = ref(false);
     const store = useStore();
@@ -260,7 +274,6 @@ export default {
       if (isPlaying.value) {
         isPlaying.value = false;
         audio.value.pause();
-        cdAnimate.value.pause();
       } else {
         isPlaying.value = true;
         audio.value.play();
@@ -321,6 +334,14 @@ export default {
       isShuffle.value = !isShuffle.value;
       shuffleSong();
     };
+    onBeforeUnmount(() => {
+      store.commit("setCurrentSongPlaying", {
+        ...song.value,
+        currentTime: audio.value.currentTime,
+        isPlaying: isPlaying.value,
+        volume: audio.value.volume,
+      });
+    });
     // remove audio src when leave page
     onUnmounted(() => {
       audio.value.src = "";
@@ -395,6 +416,10 @@ export default {
       nextSong();
     };
 
+    const setSongVolume = (data) => {
+      audio.value.volume = data.volume;
+    };
+
     return {
       route,
       song,
@@ -412,6 +437,7 @@ export default {
       activeShuffle,
       isInWishList,
       addToWishList,
+      setSongVolume,
     };
   },
 };
@@ -450,28 +476,6 @@ export default {
   }
   60% {
     transform: rotate(10deg);
-  }
-}
-input[type="range"] {
-  & {
-    -webkit-appearance: none;
-    @apply bg-gray3;
-  }
-  &::-webkit-slider-thumb {
-    width: 16px;
-    -webkit-appearance: none;
-    height: 16px;
-    border-radius: 50%;
-    @apply bg-black;
-    transition: opacity 0.2s ease-in-out;
-    position: relative;
-    z-index: 1;
-    opacity: 0;
-  }
-  &:hover {
-    &::-webkit-slider-thumb {
-      opacity: 1;
-    }
   }
 }
 </style>
