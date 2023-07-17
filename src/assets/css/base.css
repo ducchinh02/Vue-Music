@@ -51,24 +51,20 @@ input::placeholder {
   }
 }
 input[type="range"] {
-  & {
-    -webkit-appearance: none;
-    @apply bg-gray3;
-  }
-  &::-webkit-slider-thumb {
-    width: 16px;
-    -webkit-appearance: none;
-    height: 16px;
-    border-radius: 50%;
-    @apply bg-black;
-    transition: opacity 0.2s ease-in-out;
-    position: relative;
-    z-index: 1;
-    opacity: 0;
-  }
-  &:hover {
-    &::-webkit-slider-thumb {
-      opacity: 1;
-    }
-  }
+  -webkit-appearance: none;
+  @apply bg-gray3;
+}
+input[type="range"]::-webkit-slider-thumb {
+  width: 16px;
+  -webkit-appearance: none;
+  height: 16px;
+  border-radius: 50%;
+  @apply bg-black;
+  transition: opacity 0.2s ease-in-out;
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+}
+input[type="range"]:hover::-webkit-slider-thumb {
+  opacity: 1;
 }

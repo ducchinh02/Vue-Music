@@ -1,164 +1,180 @@
 <template>
-  <div
-    class="music-player h-screen pt-8 flex flex-col relative"
-    :class="{
-      'bg-primary': song.genre === 'chill',
-      'bg-yellow': song.genre === 'classic',
-    }"
-  >
-    <!-- header actions -->
-    <header-actions
-      @addToWishList="addToWishList"
-      routerName="Album"
-      :routerParams="{ name: song.genre }"
-      :isInWishList="isInWishList"
+  <div class="flex h-screen overflow-hidden">
+    <div
+      class="music-player pt-8 flex flex-col relative w-full md:w-[60%] lg:w-[70%] border-0 md:border-r-[3px]"
+      :class="{
+        'bg-primary border-primary': song.genre === 'chill',
+        'bg-yellow border-yellow': song.genre === 'classic',
+      }"
     >
-      <div class="flex-1 text-center text-sm md:text-base px-4">
-        Now Playing
+      <!-- header actions -->
+      <header-actions
+        @addToWishList="addToWishList"
+        routerName="Album"
+        :routerParams="{ name: song.genre }"
+        :isInWishList="isInWishList"
+      >
+        <div class="flex-1 text-center text-sm md:text-base px-4">
+          Now Playing
 
-        <div class="font-semibold mt-1">
-          <ion-icon
-            name="musical-note"
-            class="inline-flex music-icon items-center mr-1"
-          ></ion-icon>
-          {{ song.name }}
-          <ion-icon
-            name="musical-note"
-            class="inline-flex music-icon items-center ml-1"
-          ></ion-icon>
+          <div class="font-semibold mt-1">
+            <ion-icon
+              name="musical-note"
+              class="inline-flex music-icon items-center mr-1"
+            ></ion-icon>
+            {{ song.name }}
+            <ion-icon
+              name="musical-note"
+              class="inline-flex music-icon items-center ml-1"
+            ></ion-icon>
+          </div>
         </div>
-      </div>
-    </header-actions>
-    <!-- main -->
-    <div
-      class="music-container overflow-auto pb-20 flex-1 mt-8 rounded-t-3xl bg-white"
-    >
+      </header-actions>
+      <!-- main -->
       <div
-        class="container px-8 mx-auto pt-12 lg:flex lg:items-center lg:justify-around"
+        class="music-container overflow-auto pb-20 flex-1 mt-8 rounded-t-3xl bg-white"
       >
-        <!-- cd thumb -->
-        <div class="mx-auto lg:mx-0 w-56 sm:w-72 lg:w-96">
-          <div
-            class="cd-thumb w-full rounded-full relative"
-            style="padding-top: 100%"
-            :style="{
-              background: `url(${song.thumb}) center / cover no-repeat`,
-            }"
-          >
+        <div
+          class="container px-8 mx-auto pt-12 lg:flex lg:items-center lg:justify-around"
+        >
+          <!-- cd thumb -->
+          <div class="mx-auto lg:mx-0 w-56 sm:w-72 lg:w-80">
             <div
-              class="border-8 absolute inset-0 rounded-full"
-              :class="{
-                'border-primary': song.genre === 'chill',
-                'border-yellow': song.genre === 'classic',
-              }"
-            ></div>
-          </div>
-        </div>
-        <!-- song actions -->
-        <div class="music-actions lg:w-2/5">
-          <div class="song-info text-center mt-6">
-            <div class="song-name font-semibold text-2xl">{{ song.name }}</div>
-            <div class="song-artist text-base text-text">
-              {{ song.artist }}
-            </div>
-          </div>
-          <!-- song controls -->
-          <div
-            class="song-controls mt-6 flex items-center justify-center gap-6"
-          >
-            <!-- previous song -->
-            <div
-              @click="prevSong"
-              class="icon-action cursor-pointer flex items-center text-2xl text-text"
-            >
-              <ion-icon name="play-skip-back"></ion-icon>
-            </div>
-            <!-- play/pause song -->
-            <div
-              class="icon-action text-3xl cursor-pointer text-white flex items-center p-4 rounded-full"
-              @click="playSong"
-              :class="{
-                'bg-primary': song.genre === 'chill',
-                'bg-yellow': song.genre === 'classic',
+              class="cd-thumb w-full rounded-full relative"
+              style="padding-top: 100%"
+              :style="{
+                background: `url(${song.thumb}) center / cover no-repeat`,
               }"
             >
-              <ion-icon v-if="!isPlaying" name="play"></ion-icon>
-              <ion-icon v-else name="pause"></ion-icon>
-            </div>
-            <!-- next song -->
-            <div
-              @click="nextSong"
-              class="icon-action cursor-pointer flex items-center text-2xl text-text"
-            >
-              <ion-icon name="play-skip-forward"></ion-icon>
+              <div
+                class="border-8 absolute inset-0 rounded-full"
+                :class="{
+                  'border-primary': song.genre === 'chill',
+                  'border-yellow': song.genre === 'classic',
+                }"
+              ></div>
             </div>
           </div>
-          <div class="song-controls flex flex-wrap mt-10 items-center gap-5">
-            <!-- song duration -->
-            <div class="song-progress w-full sm:w-3/5 flex items-center gap-3">
-              <!-- current time -->
-              <div class="current-time text-text text-xs font-medium"></div>
-              <!-- progress -->
-              <div class="w-full flex-1 relative progress-bar">
-                <input
-                  type="range"
-                  value="0"
-                  step="1"
-                  min="0"
-                  max="100"
-                  class="w-full h-2 block rounded cursor-pointer"
-                  @input="moveProgressBar"
-                  @change="seekTime"
-                />
-                <div
-                  class="slide absolute pointer-events-none top-0 rounded left-0 h-full bg-black"
-                ></div>
+          <!-- song actions -->
+          <div class="music-actions lg:w-[45%]">
+            <div class="song-info text-center mt-6">
+              <div class="song-name font-semibold text-2xl">
+                {{ song.name }}
               </div>
-              <!-- duration -->
-              <div class="duration text-text text-xs font-medium"></div>
+              <div class="song-artist text-base text-text">
+                {{ song.artist }}
+              </div>
             </div>
-            <!-- song volume -->
-            <music-volume @setSongVolume="setSongVolume" class="flex-1" />
+            <!-- song controls -->
+            <div
+              class="song-play-controls mt-6 flex items-center justify-center gap-6"
+            >
+              <!-- previous song -->
+              <div
+                @click="prevSong"
+                class="icon-action cursor-pointer flex items-center text-2xl text-text"
+              >
+                <ion-icon name="play-skip-back"></ion-icon>
+              </div>
+              <!-- play/pause song -->
+              <div
+                class="icon-action text-3xl cursor-pointer text-white flex items-center p-4 rounded-full"
+                @click="playSong"
+                :class="{
+                  'bg-primary': song.genre === 'chill',
+                  'bg-yellow': song.genre === 'classic',
+                }"
+              >
+                <ion-icon v-if="!isPlaying" name="play"></ion-icon>
+                <ion-icon v-else name="pause"></ion-icon>
+              </div>
+              <!-- next song -->
+              <div
+                @click="nextSong"
+                class="icon-action cursor-pointer flex items-center text-2xl text-text"
+              >
+                <ion-icon name="play-skip-forward"></ion-icon>
+              </div>
+            </div>
+            <div
+              class="flex flex-wrap sm:mx-0 mx-[-18px] mt-10 items-center gap-5"
+            >
+              <!-- song duration -->
+              <div
+                class="song-progress w-[60%] sm:w-3/5 flex items-center gap-3"
+              >
+                <!-- current time -->
+                <div class="current-time text-text text-xs font-medium"></div>
+                <!-- progress -->
+                <div class="w-full flex-1 relative progress-bar">
+                  <input
+                    type="range"
+                    value="0"
+                    step="1"
+                    min="0"
+                    max="100"
+                    class="w-full h-2 block rounded cursor-pointer"
+                    @input="moveProgressBar"
+                    @change="seekTime"
+                  />
+                  <div
+                    class="slide absolute pointer-events-none top-0 rounded left-0 h-full bg-black"
+                  ></div>
+                </div>
+                <!-- duration -->
+                <div class="duration text-text text-xs font-medium"></div>
+              </div>
+              <!-- song volume -->
+              <music-volume
+                @setSongVolume="setSongVolume"
+                class="flex-1 max-w-[50%]"
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- footer -->
-    <div
-      class="footer-actions overflow-hidden bg-white sticky bottom-0 left-0 w-full"
-    >
+      <!-- footer -->
       <div
-        class="container mx-auto px-8 max-w-full rounded-t-3xl pt-8 p-b-safe-7"
-        :class="{
-          'bg-primary': song.genre === 'chill',
-          'bg-yellow': song.genre === 'classic',
-        }"
+        class="footer-actions overflow-hidden bg-white sticky bottom-0 left-0 w-full"
       >
-        <div class="flex items-center justify-around text-3xl text-text">
-          <a
-            class="icon flex items-center cursor-pointer"
-            :href="song.src"
-            :download="song.name"
-          >
-            <ion-icon name="download"></ion-icon>
-          </a>
-          <div
-            class="icon flex items-center cursor-pointer"
-            :class="{ 'text-white': isLoop }"
-            @click="loopSong"
-          >
-            <ion-icon name="repeat"></ion-icon>
-          </div>
-          <div
-            class="icon flex items-center cursor-pointer"
-            :class="{ 'text-white': isShuffle }"
-            @click="activeShuffle"
-          >
-            <ion-icon name="shuffle"></ion-icon>
+        <div
+          class="container mx-auto px-8 max-w-full rounded-t-3xl pt-8 p-b-safe-7"
+          :class="{
+            'bg-primary': song.genre === 'chill',
+            'bg-yellow': song.genre === 'classic',
+          }"
+        >
+          <div class="flex items-center justify-around text-3xl text-text">
+            <a
+              class="icon flex items-center cursor-pointer"
+              :href="song.src"
+              :download="song.name"
+            >
+              <ion-icon name="download"></ion-icon>
+            </a>
+            <div
+              class="icon flex items-center cursor-pointer"
+              :class="{ 'text-white': isLoop }"
+              @click="loopSong"
+            >
+              <ion-icon name="repeat"></ion-icon>
+            </div>
+            <div
+              class="icon flex items-center cursor-pointer"
+              :class="{ 'text-white': isShuffle }"
+              @click="activeShuffle"
+            >
+              <ion-icon name="shuffle"></ion-icon>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <list-songs
+      :listMusic="listMusic"
+      :isEnableActive="true"
+      class="hidden md:block"
+    />
   </div>
 </template>
 
@@ -166,6 +182,7 @@
 import HeaderActions from "../components/HeaderActions.vue";
 import MusicVolume from "@/components/MusicVolume.vue";
 import { useRoute } from "vue-router";
+import ListSongs from "@/components/ListSongs.vue";
 import {
   onBeforeMount,
   ref,
@@ -173,6 +190,7 @@ import {
   onBeforeUnmount,
   onMounted,
   reactive,
+  watch,
 } from "vue";
 import { LIST_MUSIC } from "@/constants/index";
 import { useStore } from "vuex";
@@ -190,6 +208,7 @@ export default {
   components: {
     HeaderActions,
     MusicVolume,
+    ListSongs,
   },
   setup() {
     // console.log(type);
@@ -209,10 +228,27 @@ export default {
     const isShuffle = ref(false);
     const store = useStore();
     const isInWishList = ref(false);
-    // get song on load
-    onBeforeMount(() => {
-      audio.value.play();
+
+    const setSongState = () => {
+      store.commit("setCurrentSongPlaying", {
+        id: route.params.name,
+        ...song.value,
+        currentTime: audio.value.currentTime,
+        isPlaying: isPlaying.value,
+        volume: audio.value.volume,
+        genre: song.value.genre,
+      });
+    };
+    watch(
+      () => route.params.name,
+      () => {
+        getSong();
+      }
+    );
+
+    const getSong = () => {
       song.value = listMusic.find((song) => song.id === route.params.name);
+      audio.value.play();
       audio.value.src = song.value.src;
       isPlaying.value = true;
       audio.value.autoplay = "true";
@@ -226,6 +262,11 @@ export default {
       if (check) {
         isInWishList.value = true;
       } else isInWishList.value = false;
+      setSongState();
+    };
+    // get song on load
+    onBeforeMount(() => {
+      getSong();
     });
     // add to wishlist
     const addToWishList = () => {
@@ -268,6 +309,7 @@ export default {
       } else {
         audio.value.pause();
       }
+      setSongState();
     };
     // play song
     const playSong = () => {
@@ -335,12 +377,7 @@ export default {
       shuffleSong();
     };
     onBeforeUnmount(() => {
-      store.commit("setCurrentSongPlaying", {
-        ...song.value,
-        currentTime: audio.value.currentTime,
-        isPlaying: isPlaying.value,
-        volume: audio.value.volume,
-      });
+      setSongState();
     });
     // remove audio src when leave page
     onUnmounted(() => {
@@ -438,6 +475,7 @@ export default {
       isInWishList,
       addToWishList,
       setSongVolume,
+      listMusic,
     };
   },
 };
