@@ -40,7 +40,7 @@ const emit = defineEmits(["setSongVolume"]);
 
 const slideRef = ref(null);
 const songVolume = ref(50);
-const tempVolume = ref(0);
+const tempVolume = ref(50);
 
 const setSongVolume = () => {
   emit("setSongVolume", { volume: songVolume.value / 100 });

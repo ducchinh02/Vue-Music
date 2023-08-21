@@ -48,21 +48,23 @@
       </div>
       <!-- search result -->
       <div v-else class="flex flex-col gap-7 mt-8">
-        <router-link
-          v-for="song in searchResult"
-          :to="{
-            name: 'PlaySong',
-            params: { name: song.id },
-            query: { type: song.genre },
-          }"
-          :key="song.id"
-        >
-          <music-item
-            :thumb="song.thumb"
-            :name="song.name"
-            :artist="song.artist"
-          />
-        </router-link>
+        <div v-if="searchResult && searchResult.length">
+          <router-link
+            v-for="song in searchResult"
+            :to="{
+              name: 'PlaySong',
+              params: { name: song.id },
+              query: { type: song.genre },
+            }"
+            :key="song.id"
+          >
+            <music-item :song="song" />
+          </router-link>
+        </div>
+        <p v-else class="font-bold text-base flex items-center">
+          <ion-icon name="search"></ion-icon
+          ><span class="ms-2">No result found</span>
+        </p>
       </div>
       <!-- <div class="break-words">
         {{ listAlbum }}
