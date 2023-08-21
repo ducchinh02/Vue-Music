@@ -72,7 +72,7 @@ onMounted(() => {
 const toggleMuteVolume = () => {
   songVolume.value
     ? (songVolume.value = 0)
-    : (songVolume.value = tempVolume.value);
+    : (songVolume.value = tempVolume.value > 0 ? tempVolume.value : 20);
   setSongVolume();
   updateProcessStyle();
 };
