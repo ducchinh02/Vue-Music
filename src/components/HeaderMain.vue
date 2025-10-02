@@ -43,7 +43,6 @@ export default {
 <style lang="scss" scoped>
 .header-main {
   .main-image {
-    border-bottom-left-radius: 40px;
     border-bottom-right-radius: 40px;
   }
 }

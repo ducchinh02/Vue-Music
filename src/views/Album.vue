@@ -41,19 +41,16 @@ export default {
       const check = store.state.album.find(
         (albumW) => albumW.genre === album.genre
       );
-      if (check) {
-        isInWishList.value = true;
-      } else isInWishList.value = false;
+      isInWishList.value = check;
     });
     // add to wishlist
     const addToWishList = () => {
-      if (isInWishList.value) {
-        store.dispatch("removeFromWishlist", { album });
-        isInWishList.value = false;
-      } else {
-        store.dispatch("addToWishlist", { album });
-        isInWishList.value = true;
-      }
+      const action = isInWishList.value
+        ? "removeFromWishlist"
+        : "addToWishlist";
+
+      store.dispatch(action, { album });
+      isInWishList.value = !isInWishList.value;
     };
     // get list music
     const listMusic = computed(() =>

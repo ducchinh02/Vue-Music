@@ -211,11 +211,12 @@ export default {
     ListSongs,
   },
   setup() {
-    // console.log(type);
     // define variables
     const route = useRoute();
+
     const audio = ref(null);
     audio.value = new Audio();
+
     const currentSongIndex = ref(null);
     // const currentSongPlaying = computed(() => store.state.nowPlaying);
     const song = ref(null);
@@ -274,13 +275,12 @@ export default {
         store.dispatch("removeSongFromWishlist", {
           song: listMusic[currentSongIndex.value],
         });
-        isInWishList.value = false;
       } else {
         store.dispatch("addSongToWishlist", {
           song: listMusic[currentSongIndex.value],
         });
-        isInWishList.value = true;
       }
+      isInWishList.value = !isInWishList.value;
     };
     // dom
     onMounted(() => {
@@ -313,13 +313,8 @@ export default {
     };
     // play song
     const playSong = () => {
-      if (isPlaying.value) {
-        isPlaying.value = false;
-        audio.value.pause();
-      } else {
-        isPlaying.value = true;
-        audio.value.play();
-      }
+      isPlaying.value ? audio.value.pause() : audio.value.play();
+      isPlaying.value = !isPlaying.value;
     };
     // check in wishlist
     const checkInWishList = () => {
